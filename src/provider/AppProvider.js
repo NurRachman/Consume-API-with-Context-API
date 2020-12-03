@@ -1,9 +1,16 @@
 import React, { useState, useContext, useReducer } from 'react';
-import Context from '../context/AppContext';
+
+const Context = React.createContext({
+  repos: [],
+  requestRepos: () => { },
+  isLoading: false,
+  onFilter: (text) => { },
+});
 
 const AppProvider = ({ children }) => {
 
   const [repos, setRepos] = useState([]);
+  const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
 
   requestRepos = async () => {
@@ -11,7 +18,8 @@ const AppProvider = ({ children }) => {
     try {
       const request = await fetch('https://api.github.com/users/NurRachmen/repos');
       const response = await request.json();
-      setRepos(response)
+      setRepos(response);
+      setData(response);
     } catch (error) {
       console.log(error);
     } finally {
@@ -19,11 +27,21 @@ const AppProvider = ({ children }) => {
     }
   };
 
+  onFilter = (keyword) => {
+    if (keyword) {
+      const filter = repos.filter((repo) => repo.full_name.includes(keyword));
+      setData(filter);
+    } else {
+      setData(repos);
+    }
+  };
+
   return (
     <Context.Provider value={{
-      repos,
-      requestRepos,
+      repos: data,
       isLoading: loading,
+      requestRepos,
+      onFilter,
     }}>
       {children}
     </Context.Provider>

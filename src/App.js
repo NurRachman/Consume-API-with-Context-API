@@ -4,7 +4,7 @@ import { useAppContext } from './provider/AppProvider';
 
 const App = () => {
 
-  const { repos, requestRepos, isLoading } = useAppContext();
+  const { repos, requestRepos, isLoading, onFilter } = useAppContext();
 
   const CardItems = ({ label }) => {
     return (
@@ -20,7 +20,8 @@ const App = () => {
           <TextInput
             style={styles.inputSearchRepo}
             placeholderTextColor="#24292e"
-            placeholder="Find a Repository..." />
+            placeholder="Find a Repository..."
+            onChangeText={onFilter} />
 
           {
             repos.map((item) => (
